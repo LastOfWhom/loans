@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace tests\unit\services;
 
+use app\dto\LoanRequestDto;
 use app\models\LoanRequest;
 use app\repositories\interfaces\LoanRequestRepositoryInterface;
 use app\services\LoanRequestService;
@@ -34,24 +35,10 @@ class LoanRequestServiceTest extends TestCase
                 return true;
             });
 
-        $result = $this->service->create(['user_id' => 1, 'amount' => 3000, 'term' => 30]);
+        $result = $this->service->create(new LoanRequestDto(userId: 1, amount: 3000, term: 30));
 
         $this->assertTrue($result['result']);
         $this->assertSame(42, $result['id']);
-    }
-
-    /**
-     * Пустой запрос
-     */
-    public function testCreateFailsOnEmptyData(): void
-    {
-        $this->repository->expects($this->never())->method('hasApprovedRequest');
-        $this->repository->expects($this->never())->method('save');
-
-        $result = $this->service->create([]);
-
-        $this->assertFalse($result['result']);
-        $this->assertArrayNotHasKey('id', $result);
     }
 
     /**
@@ -61,7 +48,7 @@ class LoanRequestServiceTest extends TestCase
     {
         $this->repository->expects($this->never())->method('save');
 
-        $result = $this->service->create(['user_id' => 0, 'amount' => 3000, 'term' => 30]);
+        $result = $this->service->create(new LoanRequestDto(userId: 0, amount: 3000, term: 30));
 
         $this->assertFalse($result['result']);
     }
@@ -73,46 +60,34 @@ class LoanRequestServiceTest extends TestCase
     {
         $this->repository->expects($this->never())->method('save');
 
-        $result = $this->service->create(['user_id' => 1, 'amount' => -100, 'term' => 30]);
+        $result = $this->service->create(new LoanRequestDto(userId: 1, amount: -100, term: 30));
 
         $this->assertFalse($result['result']);
     }
 
     /**
-     * Нечисловые значения не проходят валидацию
-     */
-    public function testCreateFailsOnNonIntegerFields(): void
-    {
-        $this->repository->expects($this->never())->method('save');
-
-        $result = $this->service->create(['user_id' => 'abc', 'amount' => 1000, 'term' => 30]);
-
-        $this->assertFalse($result['result']);
-    }
-
-    /**
-     * Если у пользователя уже есть одобренная заявка - создание запрещено
+     * Если у пользователя уже есть одобренная заявка — создание запрещено
      */
     public function testCreateFailsWhenUserAlreadyHasApprovedRequest(): void
     {
         $this->repository->method('hasApprovedRequest')->with(1)->willReturn(true);
         $this->repository->expects($this->never())->method('save');
 
-        $result = $this->service->create(['user_id' => 1, 'amount' => 3000, 'term' => 30]);
+        $result = $this->service->create(new LoanRequestDto(userId: 1, amount: 3000, term: 30));
 
         $this->assertFalse($result['result']);
         $this->assertArrayNotHasKey('id', $result);
     }
 
     /**
-     * Ошибка сохранения в репозитории - возвращаем false
+     * Ошибка сохранения в репозитории — возвращаем false
      */
     public function testCreateFailsWhenRepositorySaveReturnsFalse(): void
     {
         $this->repository->method('hasApprovedRequest')->willReturn(false);
         $this->repository->method('save')->willReturn(false);
 
-        $result = $this->service->create(['user_id' => 1, 'amount' => 3000, 'term' => 30]);
+        $result = $this->service->create(new LoanRequestDto(userId: 1, amount: 3000, term: 30));
 
         $this->assertFalse($result['result']);
         $this->assertArrayNotHasKey('id', $result);
@@ -131,7 +106,7 @@ class LoanRequestServiceTest extends TestCase
                 return true;
             });
 
-        $result = $this->service->create(['user_id' => 5, 'amount' => 500, 'term' => 7]);
+        $result = $this->service->create(new LoanRequestDto(userId: 5, amount: 500, term: 7));
 
         $this->assertArrayHasKey('id', $result);
         $this->assertSame(99, $result['id']);
