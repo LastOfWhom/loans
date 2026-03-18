@@ -8,13 +8,6 @@ use app\models\LoanRequest;
 use app\repositories\interfaces\LoanRequestRepositoryInterface;
 use app\services\interfaces\LoanRequestServiceInterface;
 
-/**
- * Реализует сценарий подачи заявки на займ
- *
- * Бизнес-правила:
- *  - Поля user_id, amount, term обязательны и должны быть положительными целыми числами.
- *  - У пользователя не должно быть уже одобренной заявки.
- */
 class LoanRequestService implements LoanRequestServiceInterface
 {
     public function __construct(

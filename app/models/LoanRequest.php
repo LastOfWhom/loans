@@ -9,8 +9,6 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
- * ActiveRecord model representing a loan request.
- *
  * @property int    $id
  * @property int    $user_id
  * @property int    $amount

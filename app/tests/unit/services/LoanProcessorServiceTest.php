@@ -11,18 +11,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Yii;
 
-/**
- * Тесты для LoanProcessorService.
- *
- * Проверяемые сценарии:
- *  - Нет заявок в статусе «pending» — репозиторий не вызывается.
- *  - Заявка заблокирована другим воркером (SKIP LOCKED) — пропускается.
- *  - Пользователь уже имеет одобренную заявку — статус всегда «declined».
- *  - Несколько заявок — updateStatus вызывается для каждой.
- *
- * Логика random_int (10 % одобрение) не тестируется — это одна строка
- * со встроенной функцией PHP, не содержащей бизнес-логики.
- */
 class LoanProcessorServiceTest extends TestCase
 {
     private LoanRequestRepositoryInterface&MockObject $repository;
@@ -33,15 +21,11 @@ class LoanProcessorServiceTest extends TestCase
         $this->repository = $this->createMock(LoanRequestRepositoryInterface::class);
         $this->service    = new LoanProcessorService($this->repository);
 
-        /*
-         * Транзакции (beginTransaction/commit/rollBack) работают на SQLite без SQL-запросов,
-         * поскольку все обращения к данным перехватываются моком репозитория.
-         */
         Yii::$app->set('db', Yii::$app->db);
     }
 
     /**
-     * Нет заявок — findAndLockPending никогда не вызывается.
+     * Нет заявок
      */
     public function testProcessAllDoesNothingWhenNoPendingRequests(): void
     {
@@ -52,7 +36,7 @@ class LoanProcessorServiceTest extends TestCase
     }
 
     /**
-     * Строка заблокирована другим воркером (SKIP LOCKED вернул null) — updateStatus не вызывается.
+     * Строка заблокирована другим воркером
      */
     public function testProcessAllSkipsAlreadyLockedRequest(): void
     {
@@ -64,8 +48,7 @@ class LoanProcessorServiceTest extends TestCase
     }
 
     /**
-     * Пользователь уже имеет одобренную заявку — статус всегда «declined»,
-     * независимо от результата random_int.
+     * Пользователь уже имеет одобренную заявку
      */
     public function testProcessAllDeclinesWhenUserAlreadyHasApprovedRequest(): void
     {
@@ -83,7 +66,7 @@ class LoanProcessorServiceTest extends TestCase
     }
 
     /**
-     * Несколько заявок — updateStatus вызывается ровно для каждой.
+     * Несколько заявок - updateStatus вызывается ровно для каждой
      */
     public function testProcessAllHandlesMultipleRequests(): void
     {
