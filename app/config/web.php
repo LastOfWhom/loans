@@ -14,7 +14,7 @@ $db = require __DIR__ . '/db.php';
 return [
     'id'                  => 'loan-api',
     'basePath'            => dirname(__DIR__),
-    'controllerNamespace' => 'app\controllers',
+    'controllerNamespace' => 'app\http\controllers',
 
     /*
      * Dependency Injection container configuration.

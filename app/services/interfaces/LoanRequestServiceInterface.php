@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace app\services\interfaces;
 
-/**
- * Контракт для сценария подачи заявки на займ
- */
 interface LoanRequestServiceInterface
 {
     /**

@@ -8,15 +8,11 @@ defined('YII_ENV') or define('YII_ENV', 'test');
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-/*
- * Минимальное Yii2-приложение для юнит-тестов.
- * Использует SQLite in-memory, чтобы ActiveRecord мог загружать схему таблиц
- * без реального подключения к PostgreSQL.
- */
+
 new yii\web\Application([
     'id'                  => 'loan-api-test',
     'basePath'            => dirname(__DIR__),
-    'controllerNamespace' => 'app\controllers',
+    'controllerNamespace' => 'app\http\controllers',
     'components'          => [
         'request'    => [
             'enableCookieValidation' => false,
@@ -37,7 +33,6 @@ new yii\web\Application([
     ],
 ]);
 
-// Создаём схему таблицы в SQLite, чтобы LoanRequest::attributes() работал без PostgreSQL.
 Yii::$app->db->createCommand()->createTable('loan_requests', [
     'id'         => 'INTEGER PRIMARY KEY AUTOINCREMENT',
     'user_id'    => 'INTEGER NOT NULL',

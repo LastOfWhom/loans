@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace app\controllers;
+namespace app\http\controllers;
 
 use app\services\interfaces\LoanProcessorServiceInterface;
 use Yii;
 use yii\base\Module;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
+
 class ProcessorController extends Controller
 {
     public $enableCsrfValidation = false;

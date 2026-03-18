@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\controllers;
+namespace app\http\controllers;
 
 use app\services\interfaces\LoanRequestServiceInterface;
 use Yii;
